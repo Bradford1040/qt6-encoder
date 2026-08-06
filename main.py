@@ -3,6 +3,7 @@ FFmpeg Qt6 Encoder GUI Wrapper
 A graphical interface for encoding video files using hardware-accelerated HEVC.
 """
 
+import cmd
 import sys
 import subprocess
 import os
@@ -231,8 +232,8 @@ class EncoderApp(QMainWindow):
                 "-disposition:s:0", "default",
             ]
         else:
-            cmd.extend(["-map", "0", "-map_metadata", "0"])
-            sub_flags = ["-c:s", "copy"]
+            cmd.extend(["-map", "0", "-map_metadata", "-1"])
+            sub_flags = ["-c:s", "mov_text"]
 
         # Hardware/CPU Selection Logic
         if self.radio_nvenc.isChecked():
