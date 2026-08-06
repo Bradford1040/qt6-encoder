@@ -194,9 +194,9 @@ class EncoderApp(QMainWindow):
         self.lbl_sub.setText("Subtitle File: None (Will use built-in if left blank)")
 
     def select_output(self):
-        """Open a file dialog to designate the output MKV file."""
+        """Open a file dialog to designate the output MP4 file."""
         file, _ = QFileDialog.getSaveFileName(
-            self, "Save Video As", "", "Matroska (*.mkv)"
+            self, "Save Video As", "", "MPEG-4 Video (*.mp4)"
         )
         if file:
             self.output_file = file
@@ -224,9 +224,9 @@ class EncoderApp(QMainWindow):
 
         if self.subtitle_file:
             cmd.extend(["-i", self.subtitle_file])
-            cmd.extend(["-map", "0:v", "-map", "0:a", "-map", "1:s", "-map_metadata", "0"])
+            cmd.extend(["-map", "0:v", "-map", "0:a", "-map", "1:s", "-map_metadata", "-1"])
             sub_flags = [
-                "-c:s", "srt",
+                "-c:s", "mov_text",
                 "-metadata:s:s:0", "language=eng",
                 "-disposition:s:0", "default",
             ]
