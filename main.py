@@ -225,7 +225,11 @@ class EncoderApp(QMainWindow):
         if self.subtitle_file:
             cmd.extend(["-i", self.subtitle_file])
             cmd.extend(["-map", "0:v", "-map", "0:a", "-map", "1:s", "-map_metadata", "0"])
-            sub_flags = ["-c:s", "srt", "-metadata:s:s:0", "language=eng", "-disposition:s:0", "default"]
+            sub_flags = [
+                "-c:s", "srt",
+                "-metadata:s:s:0", "language=eng",
+                "-disposition:s:0", "default",
+            ]
         else:
             cmd.extend(["-map", "0", "-map_metadata", "0"])
             sub_flags = ["-c:s", "copy"]
