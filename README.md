@@ -4,6 +4,12 @@
 
 ---
 
+Open a terminal
+
+```bash
+git clone https://github.com/Bradford1040/qt6-encoder ~/qt6-encoder
+```
+
 Open your terminal and run this command to create the file:
 
 ```bash
