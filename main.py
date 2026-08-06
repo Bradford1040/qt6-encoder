@@ -6,6 +6,8 @@ A graphical interface for encoding video files using hardware-accelerated HEVC.
 import sys
 import subprocess
 import os
+
+# pylint: disable=no-name-in-module
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
