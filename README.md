@@ -1,5 +1,6 @@
 # This is a KDE wrapper for ffmpeg
 
+![screenshot](qt6-encoder-ss.png)
 Open your terminal and run this command to create the file:
 
 ```bash
