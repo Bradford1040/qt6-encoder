@@ -1,3 +1,8 @@
+"""
+FFmpeg Qt6 Encoder GUI Wrapper
+A graphical interface for encoding video files using hardware-accelerated HEVC.
+"""
+
 import sys
 import subprocess
 import os
@@ -20,35 +25,43 @@ from PyQt6.QtWidgets import (
 
 
 class EncodeWorker(QThread):
+    """Background thread for executing FFmpeg without blocking the main GUI."""
+    # pylint: disable=too-few-public-methods
+
     log_signal = pyqtSignal(str)
     finished_signal = pyqtSignal(int)
 
     def __init__(self, cmd):
+        """Initialize the worker thread with the FFmpeg command list."""
         super().__init__()
         self.cmd = cmd
 
     def run(self):
-        process = subprocess.Popen(
+        """Execute the subprocess and emit stdout line-by-line."""
+        with subprocess.Popen(
             self.cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
             bufsize=1,
-        )
+        ) as process:
+            while True:
+                line = process.stdout.readline()
+                if not line and process.poll() is not None:
+                    break
+                if line:
+                    self.log_signal.emit(line.rstrip())
 
-        while True:
-            line = process.stdout.readline()
-            if not line and process.poll() is not None:
-                break
-            if line:
-                self.log_signal.emit(line.rstrip())
-
-        return_code = process.wait()
-        self.finished_signal.emit(return_code)
+            return_code = process.wait()
+            self.finished_signal.emit(return_code)
 
 
 class EncoderApp(QMainWindow):
+    """Main window class for configuring and launching FFmpeg encodes."""
+    # pylint: disable=too-many-instance-attributes, too-many-statements
+
     def __init__(self):
+        """Construct the main window UI and configure initial state."""
         super().__init__()
         self.setWindowTitle("FFmpeg Compression Wrapper")
         self.resize(700, 600)
@@ -151,6 +164,7 @@ class EncoderApp(QMainWindow):
         self.worker = None
 
     def select_input(self):
+        """Open a file dialog to select the input video."""
         file, _ = QFileDialog.getOpenFileName(
             self, "Select Video", "", "Video Files (*.mp4 *.mkv)"
         )
@@ -159,10 +173,12 @@ class EncoderApp(QMainWindow):
             self.lbl_input.setText(f"Input Video: {file}")
 
     def clear_input(self):
+        """Clear the selected input video from the UI."""
         self.input_file = ""
         self.lbl_input.setText("Input Video: None")
 
     def select_subtitle(self):
+        """Open a file dialog to select an external subtitle file."""
         file, _ = QFileDialog.getOpenFileName(
             self, "Select Subtitle", "", "SubRip Subtitle (*.srt)"
         )
@@ -171,10 +187,12 @@ class EncoderApp(QMainWindow):
             self.lbl_sub.setText(f"Subtitle File: {file}")
 
     def clear_subtitle(self):
+        """Clear the selected subtitle file from the UI."""
         self.subtitle_file = ""
         self.lbl_sub.setText("Subtitle File: None (Will use built-in if left blank)")
 
     def select_output(self):
+        """Open a file dialog to designate the output MKV file."""
         file, _ = QFileDialog.getSaveFileName(
             self, "Save Video As", "", "Matroska (*.mkv)"
         )
@@ -183,11 +201,13 @@ class EncoderApp(QMainWindow):
             self.lbl_output.setText(f"Output File: {file}")
 
     def append_log(self, text):
+        """Append text to the live log console and scroll to the bottom."""
         self.log_console.append(text)
         sb = self.log_console.verticalScrollBar()
         sb.setValue(sb.maximum())
 
     def start_encoding(self):
+        """Assemble the FFmpeg command and launch the worker thread."""
         if not self.input_file or not self.output_file:
             QMessageBox.warning(
                 self,
@@ -202,17 +222,8 @@ class EncoderApp(QMainWindow):
 
         if self.subtitle_file:
             cmd.extend(["-i", self.subtitle_file])
-            cmd.extend(
-                ["-map", "0:v", "-map", "0:a", "-map", "1:s", "-map_metadata", "0"]
-            )
-            sub_flags = [
-                "-c:s",
-                "srt",
-                "-metadata:s:s:0",
-                "language=eng",
-                "-disposition:s:0",
-                "default",
-            ]
+            cmd.extend(["-map", "0:v", "-map", "0:a", "-map", "1:s", "-map_metadata", "0"])
+            sub_flags = ["-c:s", "srt", "-metadata:s:s:0", "language=eng", "-disposition:s:0", "default"]
         else:
             cmd.extend(["-map", "0", "-map_metadata", "0"])
             sub_flags = ["-c:s", "copy"]
@@ -250,6 +261,7 @@ class EncoderApp(QMainWindow):
         self.worker.start()
 
     def encoding_finished(self, return_code):
+        """Handle UI restoration and log saving once the process completes."""
         # Restore UI
         self.btn_run.setEnabled(True)
         self.btn_input.setEnabled(True)
@@ -270,7 +282,7 @@ class EncoderApp(QMainWindow):
             with open(log_file_path, "w", encoding="utf-8") as f:
                 f.write(log_text)
             self.append_log(f"\n[INFO] Log file saved to: {log_file_path}")
-        except Exception as e:
+        except OSError as e:
             self.append_log(f"\n[WARNING] Could not save log file: {e}")
 
         if return_code == 0:
