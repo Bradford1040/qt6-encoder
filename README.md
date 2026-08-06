@@ -1,5 +1,9 @@
 # This is a KDE wrapper for ffmpeg
 
+- I had to make an adjustment, my original script converted media files to `*.mkv` but it seems that **KDE** has a bug
+- KDE and `*.mkv` files the duration or length of media is not shown, I switched the output to `*.mp4` it still combines the `*.srt` + `*.mp4 | *.mkv`
+- So when you rnvode it still does the same thing, stiching the subtitles to the media
+
 ![screenshot](qt6-encoder-ss.png)
 
 ---
