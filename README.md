@@ -16,7 +16,7 @@ Open your terminal and run this command to create the file:
 nano ~/.local/share/applications/ffmpeg-encoder.desktop
 ```
 
-- Paste the following block into Nano. Make sure to change the `/path/to/` directory on the `Exec=` line to wherever you actually have the main.py file saved (e.g., /home/<user-name>/qt6-encoder/main.py).
+- Paste the following block into Nano. Make sure to change the `/path/to/` directory on the `Exec=` line to wherever you actually have the main.py file saved (e.g., /home/"user-name"/qt6-encoder/main.py).
 
 ```bash
 Ini, TOML
