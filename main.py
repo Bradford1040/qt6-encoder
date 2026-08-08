@@ -3,27 +3,26 @@ FFmpeg Qt6 Encoder GUI Wrapper
 A graphical interface for encoding video files using hardware-accelerated HEVC.
 """
 
-import cmd
-import sys
-import subprocess
 import os
+import subprocess
+import sys
 
 # pylint: disable=no-name-in-module
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
-    QMainWindow,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QPushButton,
-    QFileDialog,
-    QLabel,
-    QRadioButton,
     QButtonGroup,
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
     QLineEdit,
-    QTextEdit,
+    QMainWindow,
     QMessageBox,
+    QPushButton,
+    QRadioButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
 
 
