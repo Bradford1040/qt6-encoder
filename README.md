@@ -67,7 +67,7 @@ ffmpeg -i your_movie.mp4 -map 0:s:0 extracted_subs.srt
 - **If you need to install Gaupol:**
 
 - ARCH Based is `yay -S gaupol`
-- Debian Based is `sudo apt install gaupol -y`
+- Debian/Ubuntu Based is `sudo apt install gaupol -y`
 
 - Open `extracted_subs.srt` in Gaupol, apply your `+/-0.000`  **Shift** ---> **File** ---> **Save-As** (e.g., `fixed_subs.srt`).
 
